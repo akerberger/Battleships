@@ -6,8 +6,7 @@ import java.awt.event.MouseEvent;
 import gui.GUI;
 
 
-
-//Problem i checkDownToRight()
+//hejdär
 
 
 public class Game {

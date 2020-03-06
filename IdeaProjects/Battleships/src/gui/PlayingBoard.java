@@ -38,6 +38,7 @@ public class PlayingBoard extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             gameWindow.sendClick(e.getX(), e.getY(), whos);
+            removeMouseListener();
         }
     }
 
@@ -46,6 +47,6 @@ public class PlayingBoard extends JPanel {
     }
 
     public void removeMouseListener(){
-
+        removeMouseListener(listener);
     }
 }

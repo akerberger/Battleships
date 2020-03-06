@@ -21,7 +21,7 @@ public class BattleshipServer extends Thread {
 
     private String hostAddress = null;
 
-    private GameController gameController = new GameController();
+    private GameController gameController = new GameController(this);
 
     private final List<ClientHandlerThread> CLIENT_THREADS = new LinkedList<>();
 
@@ -58,10 +58,10 @@ public class BattleshipServer extends Thread {
                 while ((msg = in.readLine()) != null) {
 //                    System.out.println("klienttråd läser : "+msg+" trådID: "+threadID);
                     //validerar drag
-//                    gameController.validateMove(msg);
+                    gameController.validateMove(msg);
                     //skickar
 
-                    broadcastMessage(msg);
+
 //                    GUI.broadcastedMessage(connection.getInetAddress(), msg);
                     Thread.sleep(20);
                 }
@@ -162,9 +162,11 @@ public class BattleshipServer extends Thread {
                 } catch (IOException ioe) {
                     System.err.println("Couldn't initialize new ClientHandlerThread: " + ioe);
                 }
-                gameController.twoConnectedPlayers();
 
             }
+            try{
+            Thread.sleep(1000);}catch(InterruptedException e){e.printStackTrace();}
+            gameController.twoConnectedPlayers();
         } catch (IOException ioe) {
             System.err.println("Couldn't start server: " + ioe);
 

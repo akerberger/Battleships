@@ -72,7 +72,17 @@ public class GameWindow extends JFrame {
     //coordinates[0] = x
     //coordinates[1] = y
     public void receiveClick(String[] coordinates) {
+
+
         SIDE_PANEL.setLabelText("mottaget: " + coordinates[0] + " " + coordinates[1]);
+    }
+
+    public void setSidePanelText(String text){
+        SIDE_PANEL.setLabelText(text);
+    }
+
+    public void setupPhase(){
+        SIDE_PANEL.setupPhase();
     }
 
     // /10 eftersom matrisen är 10*10

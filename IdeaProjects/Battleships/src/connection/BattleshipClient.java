@@ -28,14 +28,14 @@ public class BattleshipClient {
 
     private BufferedReader in;
 
-//    private GameWindow gameWindow;
+    private GameWindow gameWindow;
 
     public BattleshipClient(String hostName, int port, boolean isHosting) {
 
 //        HOST = (args.length > 0 ? args[0] : DEFAULT_HOST);
 
 //        HOST = DEFAULT_HOST;
-//        this.gameWindow=gameWindow;
+
         this.isHosting = isHosting;
         HOST = hostName;
         PORT = port;
@@ -63,6 +63,11 @@ public class BattleshipClient {
         }
 
     }
+
+    public void setGameWindow(GameWindow gameWindow){
+        this.gameWindow=gameWindow;
+    }
+
 
 
     //Behöver vara trådad, annars låser programmet på listen-metoden
@@ -121,12 +126,16 @@ public class BattleshipClient {
 
 
     void receiveMessage(String msg) {
-//        out.sendTextToServer(msg);
-        String[] arr = msg.split(" ");
-        System.out.println(Arrays.toString(arr));
-        if (arr[3].equals("mine")) {
-            String[] coordinates = {arr[1], arr[2]};
-//            gameWindow.receiveClick(coordinates);
+    System.out.println("BATTLESHIPCLIENT FÅR MEDDELANDE: "+msg);
+//        String[] arr = msg.split(" ");
+//        System.out.println(Arrays.toString(arr));
+//        if (arr[3].equals("mine")) {
+//            String[] coordinates = {arr[1], arr[2]};
+////            gameWindow.receiveClick(coordinates);
+//        }
+
+        if(msg.equals("setup")){
+                gameWindow.setupPhase();
         }
     }
 

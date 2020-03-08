@@ -1,5 +1,8 @@
 package gui;
 
+import game.GameController;
+import game.GameState;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -38,8 +41,13 @@ public class PlayingBoard extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             gameWindow.sendClick(e.getX(), e.getY(), whos);
-            removeMouseListener();
+//            removeMouseListener();
         }
+    }
+
+    public void placeShipOnMyBoard(int startColumn, int startRow, int shipSize){
+        //just nu ska, i SETUP_PHASE, en båt som är tre rutor lång markeras horisontellt
+        System.out.println("SKA MARKERA SKEPP PÅ RUTA: "+startColumn+" "+startRow+" "+shipSize+" rutor stort");
     }
 
     public void addMouseListener(){

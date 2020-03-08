@@ -29,28 +29,34 @@ public class SidePanel extends JPanel {
 
     private class SouthPanel extends JPanel{
 
-        JTextArea textArea = new JTextArea("");
-        JLabel southLabel2 = new JLabel("SOUTH LABEL2");
+        JTextArea gameInstructionText = new JTextArea("");
+        JTextArea shipDescriptionText = new JTextArea("*Ship description*");
 
 
         public SouthPanel(){
             setLayout(new GridLayout(2,1));
-            textArea.setEditable(false);
-            add(textArea);
-            add(southLabel2);
+            gameInstructionText.setEditable(false);
+            shipDescriptionText.setEditable(false);
+            add(gameInstructionText);
+//            add(Box.createRigidArea(new Dimension(1,5)));
+            add(shipDescriptionText);
         }
         void setLabelText(String text){
-            southLabel2.setText(text);
+            shipDescriptionText.setText(text);
         }
-        void setTextAreaText(String text){
-            textArea.setText(text);
+        void setGameInstructionText(String text){
+            gameInstructionText.setText(text);
+        }
+
+        void setShipDescriptionText(String text){
+            shipDescriptionText.setText(text);
         }
     }
 
     public void setupPhase(){
         northPanel.setLabelText("SETUP PHASE!");
-        southPanel.setLabelText("LABEL");
-        southPanel.setTextAreaText("<- Klick on the square \nof your board where \nyour ship should be placed");
+        southPanel.setShipDescriptionText("Ship: Cruiser - \n3 squares horizontally");
+        southPanel.setGameInstructionText("<- Klick on the square \nof your board where \nyour ship should be placed");
     }
 
 

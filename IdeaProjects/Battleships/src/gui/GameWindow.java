@@ -10,10 +10,10 @@ import java.awt.event.MouseEvent;
 
 public class GameWindow extends JFrame {
 
-    private final int WINDOW_WIDTH = 500;
-    private final int WINDOW_HEIGHT = 700;
+    private static final int WINDOW_WIDTH = 500;
+    private static final int WINDOW_HEIGHT = 700;
 
-    private final double PLAYING_BOARD_SIZE = WINDOW_WIDTH * 0.65;
+    public static final double PLAYING_BOARD_SIZE = WINDOW_WIDTH * 0.65;
 
 //    private final BattleshipServer server;
 
@@ -53,8 +53,6 @@ public class GameWindow extends JFrame {
         panel.add(own, BorderLayout.SOUTH);
         panel.add(opponents, BorderLayout.NORTH);
 
-        own.addMouseListener();
-
         add(panel, BorderLayout.WEST);
         add(SIDE_PANEL, BorderLayout.EAST);
     }
@@ -83,6 +81,13 @@ public class GameWindow extends JFrame {
 
     public void setupPhase(){
         SIDE_PANEL.setupPhase();
+        own.addMouseListener();
+    }
+
+    public void placeShipOnMyBoard(int startColumn, int startRow, int shipSize){
+        own.placeShipOnMyBoard(startColumn, startRow, shipSize);
+
+        SIDE_PANEL.setLabelText("PLACERAR: "+startColumn+" "+startRow+" ");
     }
 
     // /10 eftersom matrisen är 10*10

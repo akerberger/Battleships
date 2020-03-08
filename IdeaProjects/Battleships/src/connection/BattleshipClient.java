@@ -1,12 +1,12 @@
 package connection;
 
+import game.GameController;
+import game.GameState;
 import gui.GameWindow;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Arrays;
 
 public class BattleshipClient {
 
@@ -29,6 +29,8 @@ public class BattleshipClient {
     private BufferedReader in;
 
     private GameWindow gameWindow;
+
+    private int id = -1;
 
     public BattleshipClient(String hostName, int port, boolean isHosting) {
 
@@ -64,10 +66,9 @@ public class BattleshipClient {
 
     }
 
-    public void setGameWindow(GameWindow gameWindow){
-        this.gameWindow=gameWindow;
+    public void setGameWindow(GameWindow gameWindow) {
+        this.gameWindow = gameWindow;
     }
-
 
 
     //Behöver vara trådad, annars låser programmet på listen-metoden
@@ -91,7 +92,7 @@ public class BattleshipClient {
                 while (true) {
 
 //                    System.out.println("mottagit motståndares klick i BattleshipClient: "+in.readLine());
-                    receiveMessage(in.readLine());
+                    handleReceivedMessage(in.readLine());
                     Thread.sleep(20);
                 }
 
@@ -125,28 +126,64 @@ public class BattleshipClient {
     }
 
 
-    void receiveMessage(String msg) {
-    System.out.println("BATTLESHIPCLIENT FÅR MEDDELANDE: "+msg);
+
+
+
+    void handleReceivedMessage(String msg) throws IllegalArgumentException {
+
+        System.out.println("BATTLESHIPCLIENT MED ID: " + id + " FÅR MEDDELANDE: " + msg);
 //        String[] arr = msg.split(" ");
 //        System.out.println(Arrays.toString(arr));
 //        if (arr[3].equals("mine")) {
 //            String[] coordinates = {arr[1], arr[2]};
 ////            gameWindow.receiveClick(coordinates);
 //        }
+        String[] tokens = msg.split(" ");
 
-        if(msg.equals("setup")){
+        String messageType = tokens[0];
+
+//        if(tokens.length > 1){
+            if(messageType.equals("setID")){
+                if (id != -1) {
+                    throw new IllegalArgumentException(" ID already set in BattleshipClient");
+                } else {
+                    id = Integer.parseInt(tokens[1]);
+                }
+            }else if(messageType.equals("okMove")){
+                markSquaresOnMyBoard(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+            }else if(messageType.equals("setupPhase")){
                 gameWindow.setupPhase();
-        }
+            }
+//        }
+
+
+//        if (tokens.length > 1 && tokens[0].equals("SetID")) {
+//
+//        } else if (tokens[0].equals("approved")) {
+//            markSquaresOnMyBoard(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+//        } else if (msg.equals("setup")) {
+//            gameWindow.setupPhase();
+//        }
     }
 
     public void sendClick(int x, int y, String whichBoard) {
-        out.println(x + " " + y + " " + whichBoard + (isHosting ? "hosting client" : "remote client"));
+
+
+        out.println(x + " " + y + " " + id);
 //        System.out.println("sendklick mottaget i BattleshipClient");
 
 
     }
 
-    public boolean isHosting(){
+    private void markSquaresOnMyBoard(int startColumn, int startRow){
+        if(GameController.gameState == GameState.SETUP_PHASE){
+            int shipSize = 3; //just nu är det första och enda skeppet som ska placeras 3 rutor stort
+            gameWindow.placeShipOnMyBoard(startColumn, startRow, shipSize);
+        }
+
+    }
+
+    public boolean isHosting() {
         return isHosting;
     }
 

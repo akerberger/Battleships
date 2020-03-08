@@ -23,6 +23,8 @@ public class BattleshipServer extends Thread {
 
     private GameController gameController = new GameController(this);
 
+
+    //Gör detta till Map med id som nyckel och tråd som värde istället
     private final List<ClientHandlerThread> CLIENT_THREADS = new LinkedList<>();
 
     private boolean isAlive = false;
@@ -43,22 +45,26 @@ public class BattleshipServer extends Thread {
         BufferedReader in;
         PrintWriter out;
         int threadID;
+        boolean isHostingClient;
 
-        public ClientHandlerThread(Socket connection, int threadID) {
+        public ClientHandlerThread(Socket connection, int threadID, boolean isHostingClient) {
             this.connection = connection;
             this.threadID = threadID;
+            this.isHostingClient=isHostingClient;
         }
 
         @Override
         public void run() {
 
             try {
+                out = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()), true);
+                outputMessage("setID "+threadID);
                 in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String msg;
                 while ((msg = in.readLine()) != null) {
 //                    System.out.println("klienttråd läser : "+msg+" trådID: "+threadID);
                     //validerar drag
-                    gameController.validateMove(msg);
+                    receiveMessageFromClientThread(msg);
                     //skickar
 
 
@@ -104,14 +110,17 @@ public class BattleshipServer extends Thread {
 
 
 
-            try {
-                //kan inte denna göras i run och sen gör man bara out.println(msg) här?
-                out = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()), true);
-                out.println(msg);
-            } catch (IOException e) {
-                System.err.println("Fel i outputMessage: " + e);
-            }
+//            try {
+//                //kan inte denna göras i run och sen gör man bara out.println(msg) här?
+////                out = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()), true);
+//                out.println(msg);
+//            }
+//            catch (IOException e) {
+//                System.err.println("Fel i outputMessage: " + e);
+//            }
+            out.println(msg);
         }
+
 
 
     }
@@ -145,13 +154,17 @@ public class BattleshipServer extends Thread {
 //            GUI = new ServerGUI(InetAddress.getLocalHost().getHostName(), port);
 
             //sen går den över till klienttrådarna och väntar
+            boolean isHostingClient = true;
+
             while (CLIENT_THREADS.size() < 2) {
                 try {
 
                     isAvalible = true;
+
                     Socket clientConnection = serverSocket.accept();
 
-                    ClientHandlerThread clientThread = new ClientHandlerThread(clientConnection, CLIENT_THREADS.size() + 1);
+                    ClientHandlerThread clientThread = new ClientHandlerThread(clientConnection, CLIENT_THREADS.size() + 1, isHostingClient);
+                    isHostingClient = false;
                     CLIENT_THREADS.add(clientThread);
                     clientThread.start();
 //                    GUI.onNewClientConnected(CLIENT_THREADS.size(), clientConnection.getInetAddress().getHostName());
@@ -165,6 +178,8 @@ public class BattleshipServer extends Thread {
 
             }
             try{
+                //kanske visa laddningsskärm eller ngt så att ingen kan trycka. Eller sköta det med att ge muslyssnare
+                //innifrån two connected players
             Thread.sleep(1000);}catch(InterruptedException e){e.printStackTrace();}
             gameController.twoConnectedPlayers();
         } catch (IOException ioe) {
@@ -179,6 +194,22 @@ public class BattleshipServer extends Thread {
 
     public boolean isAvalible() {
         return isAvalible;
+    }
+
+    private synchronized void receiveMessageFromClientThread(String msg){
+        gameController.validateMove(msg);
+    }
+
+    //from GameController
+    public synchronized void sendMessageToClient(int clientId, String msg, int x, int y){
+
+        for(ClientHandlerThread clientThread : CLIENT_THREADS){
+            if (clientThread.threadID == clientId){
+
+                clientThread.outputMessage(msg+" "+x+" "+y);
+            }
+        }
+
     }
 
     public synchronized void broadcastMessage(String msg) {

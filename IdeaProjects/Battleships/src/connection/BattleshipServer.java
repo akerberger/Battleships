@@ -169,7 +169,7 @@ public class BattleshipServer extends Thread {
                     clientThread.start();
 //                    GUI.onNewClientConnected(CLIENT_THREADS.size(), clientConnection.getInetAddress().getHostName());
 
-                    System.out.println("tillkopplad");
+                    System.out.println("KLIENT TILLKOPPLAD, ID: "+clientThread.threadID);
                     isAvalible = false;
 
                 } catch (IOException ioe) {
@@ -181,7 +181,11 @@ public class BattleshipServer extends Thread {
                 //kanske visa laddningsskärm eller ngt så att ingen kan trycka. Eller sköta det med att ge muslyssnare
                 //innifrån two connected players
             Thread.sleep(1000);}catch(InterruptedException e){e.printStackTrace();}
-            gameController.twoConnectedPlayers();
+
+
+//            gameController.twoConnectedPlayers();
+            broadcastMessage("changePhase"+" "+"setupPhase");
+
         } catch (IOException ioe) {
             System.err.println("Couldn't start server: " + ioe);
 
@@ -202,7 +206,7 @@ public class BattleshipServer extends Thread {
 
     //from GameController
     public synchronized void sendMessageToClient(int clientId, String msg, int x, int y){
-
+        System.out.println("SKICKAR TILL SPECIFIK KLIENT MED ID: "+clientId+" "+msg+" "+x+" "+y);
         for(ClientHandlerThread clientThread : CLIENT_THREADS){
             if (clientThread.threadID == clientId){
 

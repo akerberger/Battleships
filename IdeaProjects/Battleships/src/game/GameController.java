@@ -21,20 +21,20 @@ public class GameController {
         this.SERVER = server;
     }
 
-    public void setGameState(GameState newState) {
-        this.gameState = newState;
+    public static void setGameState(GameState newState) {
+        gameState = newState;
     }
 
     public GameState getGameState() {
         return gameState;
     }
 
-    public void twoConnectedPlayers() {
-//        System.out.println("TVÅ TILLKOPPLADE!");
-        gameState = GameState.SETUP_PHASE;
-        SERVER.broadcastMessage("setupPhase");
-
-    }
+//    public void twoConnectedPlayers() {
+////        System.out.println("TVÅ TILLKOPPLADE!");
+//        gameState = GameState.SETUP_PHASE;
+//        SERVER.broadcastMessage("setupPhase");
+//
+//    }
 
     public boolean validateMove(String msg) {
 
@@ -57,6 +57,7 @@ public class GameController {
 
             //om det är giltigt, skicka besked till servern att godkänna draget och att klienten ska markera på board
             if(clickedColumn != -1 && clickedColumn <= BOARD_DIMENSION - 2){
+
                 SERVER.sendMessageToClient(clientId,"okMove",clickedColumn,clickedRow);
             }else{
                 //kasta undantag om -1??

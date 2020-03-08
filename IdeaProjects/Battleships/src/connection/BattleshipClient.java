@@ -7,6 +7,7 @@ import gui.GameWindow;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
 
 public class BattleshipClient {
 
@@ -52,7 +53,7 @@ public class BattleshipClient {
             receiver.start();
 
 
-            listen(socket);
+//            listen(socket);
 
 
         } catch (NumberFormatException e) {
@@ -142,6 +143,8 @@ public class BattleshipClient {
 
         String messageType = tokens[0];
 
+        System.out.println("ARRAYEN: "+ Arrays.toString(tokens)+" MESSAGE TYPE: "+messageType);
+
 //        if(tokens.length > 1){
             if(messageType.equals("setID")){
                 if (id != -1) {
@@ -151,8 +154,13 @@ public class BattleshipClient {
                 }
             }else if(messageType.equals("okMove")){
                 markSquaresOnMyBoard(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
-            }else if(messageType.equals("setupPhase")){
-                gameWindow.setupPhase();
+            }else if(messageType.equals("changePhase")){
+                String newPhase = tokens[1];
+                if(newPhase.equals("setupPhase")){
+                    GameController.setGameState(GameState.SETUP_PHASE);
+                    gameWindow.setupPhase();
+                }
+
             }
 //        }
 
@@ -177,6 +185,7 @@ public class BattleshipClient {
 
     private void markSquaresOnMyBoard(int startColumn, int startRow){
         if(GameController.gameState == GameState.SETUP_PHASE){
+            System.out.println("JAAAA");
             int shipSize = 3; //just nu är det första och enda skeppet som ska placeras 3 rutor stort
             gameWindow.placeShipOnMyBoard(startColumn, startRow, shipSize);
         }

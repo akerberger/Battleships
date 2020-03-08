@@ -27,8 +27,9 @@ public class ConnectionHandler {
 
             System.out.println("hostar på "+hostName+" port "+port);
         }else{
-            System.out.println("kopplar till annan server, ange ip-adress:");
-            Scanner scan = new Scanner(System.in);
+//            System.out.println("kopplar till annan server, ange ip-adress:");
+            System.out.println("kopplar till annan server");
+//            Scanner scan = new Scanner(System.in);
 
 //            hostName = scan.nextLine();
 //

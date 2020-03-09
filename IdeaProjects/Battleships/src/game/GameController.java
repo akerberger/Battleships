@@ -5,6 +5,8 @@ import gui.GameWindow;
 
 public class GameController {
 
+    //testkommentar i markSquare-branch
+
     public static GameState gameState = GameState.CONNECTION_PHASE;
 
     public static final int BOARD_DIMENSION = 10;
